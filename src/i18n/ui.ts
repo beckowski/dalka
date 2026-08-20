@@ -99,6 +99,12 @@ export const ui = {
     "footer.privacyPolicy": "Politika zasebnosti",
     "footer.cookiesPolicy": "Politika piškotkov",
     "footer.termsOfUse": "Pogoji uporabe",
+
+    "cookies.message":
+      "Ta stran uporablja le nujno potrebne piškotke. Več o tem si preberite v naši",
+    "cookies.linkLabel": "politiki piškotkov",
+    "cookies.accept": "Sprejmi",
+    "cookies.reject": "Zavrni",
   },
 
   de: {
@@ -191,6 +197,12 @@ export const ui = {
     "footer.privacyPolicy": "Datenschutzerklärung",
     "footer.cookiesPolicy": "Cookie-Richtlinie",
     "footer.termsOfUse": "Nutzungsbedingungen",
+
+    "cookies.message":
+      "Diese Website verwendet nur unbedingt erforderliche Cookies. Mehr dazu in unserer",
+    "cookies.linkLabel": "Cookie-Richtlinie",
+    "cookies.accept": "Akzeptieren",
+    "cookies.reject": "Ablehnen",
   },
 
   ba: {
@@ -283,6 +295,12 @@ export const ui = {
     "footer.privacyPolicy": "Politika privatnosti",
     "footer.cookiesPolicy": "Politika kolačića",
     "footer.termsOfUse": "Uvjeti korištenja",
+
+    "cookies.message":
+      "Ova stranica koristi samo nužno potrebne kolačiće. Više o tome pročitajte u našoj",
+    "cookies.linkLabel": "politici kolačića",
+    "cookies.accept": "Prihvati",
+    "cookies.reject": "Odbij",
   },
 } as const;
 

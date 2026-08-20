@@ -1,0 +1,58 @@
+---
+import { useTranslations, localizedPath } from "../i18n/utils";
+import type { Lang } from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<div
+  class="fixed inset-x-0 bottom-0 z-40 hidden border-t border-slate-200 bg-white/95 backdrop-blur px-4 py-4 shadow-[0_-4px_16px_rgba(0,0,0,0.06)] sm:px-6 lg:px-8"
+  data-cookie-banner
+  role="dialog"
+  aria-live="polite"
+  aria-label={t("cookies.linkLabel")}
+>
+  <div class="mx-auto flex max-w-6xl flex-col items-center gap-3 sm:flex-row sm:justify-between">
+    <p class="text-center text-sm text-slate-700 sm:text-left">
+      {t("cookies.message")}{" "}
+      <a href={localizedPath(lang, "/cookies-policy")} class="font-medium text-slate-900 underline hover:no-underline">{t("cookies.linkLabel")}</a>.
+    </p>
+    <div class="flex shrink-0 gap-2">
+      <button
+        type="button"
+        class="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+        data-cookie-reject
+      >
+        {t("cookies.reject")}
+      </button>
+      <button
+        type="button"
+        class="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800"
+        data-cookie-accept
+      >
+        {t("cookies.accept")}
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = "dalka-cookie-consent";
+  const banner = document.querySelector<HTMLElement>("[data-cookie-banner]");
+  if (banner) {
+    if (!localStorage.getItem(STORAGE_KEY)) {
+      banner.classList.remove("hidden");
+    }
+    const setConsent = (value: "accepted" | "rejected") => {
+      localStorage.setItem(STORAGE_KEY, value);
+      banner.classList.add("hidden");
+    };
+    banner.querySelector("[data-cookie-accept]")?.addEventListener("click", () => setConsent("accepted"));
+    banner.querySelector("[data-cookie-reject]")?.addEventListener("click", () => setConsent("rejected"));
+  }
+</script>
