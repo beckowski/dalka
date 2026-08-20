@@ -1,0 +1,50 @@
+---
+// Shared client-side handler that submits any [data-form] via fetch to
+// Formspree, then swaps the form for the embedded success message — so the
+// user is not redirected to a Formspree-hosted page.
+---
+
+<script>
+  document.querySelectorAll<HTMLFormElement>("form[data-form]").forEach((form) => {
+    form.addEventListener("submit", async (event) => {
+      const action = form.getAttribute("action") || "";
+      // If the form action hasn't been configured (still a placeholder), let it
+      // fall through so the developer sees the issue clearly.
+      if (!action || action.includes("your-")) return;
+
+      event.preventDefault();
+      const submit = form.querySelector<HTMLButtonElement>("button[type=submit]");
+      if (submit) {
+        submit.disabled = true;
+        submit.dataset.label = submit.textContent || "";
+        submit.textContent = "…";
+      }
+
+      try {
+        const data = new FormData(form);
+        const res = await fetch(action, {
+          method: "POST",
+          body: data,
+          headers: { Accept: "application/json" },
+        });
+
+        if (res.ok) {
+          const success = form.querySelector<HTMLElement>("[data-success]");
+          form.querySelectorAll<HTMLElement>(
+            "input,textarea,select,button,label"
+          ).forEach((el) => el.classList.add("hidden"));
+          if (success) success.classList.remove("hidden");
+        } else {
+          throw new Error(`HTTP ${res.status}`);
+        }
+      } catch (err) {
+        console.error(err);
+        if (submit) {
+          submit.disabled = false;
+          submit.textContent = submit.dataset.label || "Submit";
+        }
+        alert("There was an error sending your message. Please try again or email us directly.");
+      }
+    });
+  });
+</script>

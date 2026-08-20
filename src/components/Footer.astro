@@ -1,0 +1,52 @@
+---
+import { useTranslations, localizedPath } from "../i18n/utils";
+import type { Lang } from "../i18n/ui";
+import { company } from "../config";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+
+const legalLinks = [
+  { href: localizedPath(lang, "/privacy-policy"), label: t("footer.privacyPolicy") },
+  { href: localizedPath(lang, "/cookies-policy"), label: t("footer.cookiesPolicy") },
+  { href: localizedPath(lang, "/terms-of-use"), label: t("footer.termsOfUse") },
+];
+---
+
+<footer class="border-t border-slate-200 bg-slate-50">
+  <div class="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-3 lg:px-8">
+    <div>
+      <p class="text-lg font-semibold text-slate-900">{company.name}</p>
+      <p class="mt-1 text-sm text-slate-600">{t("footer.tagline")}</p>
+    </div>
+    <div class="text-sm text-slate-700">
+      <p class="font-medium text-slate-900">{t("contact.address.label")}</p>
+      <address class="not-italic mt-1 text-slate-600">
+        {company.addressLines.map((line) => <div>{line}</div>)}
+      </address>
+    </div>
+    <div class="text-sm text-slate-700">
+      <p class="font-medium text-slate-900">{t("contact.title")}</p>
+      <div class="mt-1 space-y-0.5 text-slate-600">
+        <div><a href={`mailto:${company.email}`} class="hover:text-slate-900">{company.email}</a></div>
+        <div><a href={`tel:${company.phone.replace(/\s+/g, "")}`} class="hover:text-slate-900">{company.phone}</a></div>
+      </div>
+    </div>
+  </div>
+  <div class="border-t border-slate-200 px-4 py-4 sm:px-6 lg:px-8">
+    <div class="mx-auto flex max-w-6xl flex-col items-center gap-3 sm:flex-row sm:justify-between">
+      <p class="text-center text-xs text-slate-500 sm:text-left">
+        © {year} {company.name}. {t("footer.rights")}
+      </p>
+      <nav class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-slate-500">
+        {legalLinks.map((l) => (
+          <a href={l.href} class="hover:text-slate-900 hover:underline">{l.label}</a>
+        ))}
+      </nav>
+    </div>
+  </div>
+</footer>

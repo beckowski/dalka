@@ -1,0 +1,76 @@
+---
+import { useTranslations } from "../i18n/utils";
+import type { Lang } from "../i18n/ui";
+import { company } from "../config";
+import { positions } from "../i18n/positions";
+
+interface Props {
+  lang: Lang;
+  preselectedPositionId?: string;
+}
+const { lang, preselectedPositionId } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<form
+  action={company.formspree.careers}
+  method="POST"
+  class="space-y-4"
+  data-form
+>
+  <input type="hidden" name="_language" value={lang} />
+  <input type="hidden" name="_form" value="careers" />
+  <input type="text" name="_gotcha" class="hidden" tabindex="-1" autocomplete="off" />
+
+  <div class="grid gap-4 sm:grid-cols-2">
+    <label class="block">
+      <span class="text-sm font-medium text-slate-800">{t("careers.form.name")} <span class="text-red-500">*</span></span>
+      <input type="text" name="name" required class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200" />
+    </label>
+    <label class="block">
+      <span class="text-sm font-medium text-slate-800">{t("careers.form.email")} <span class="text-red-500">*</span></span>
+      <input type="email" name="email" required class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200" />
+    </label>
+    <label class="block">
+      <span class="text-sm font-medium text-slate-800">{t("careers.form.phone")}</span>
+      <input type="tel" name="phone" class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200" />
+    </label>
+    <label class="block">
+      <span class="text-sm font-medium text-slate-800">{t("careers.form.position")} <span class="text-red-500">*</span></span>
+      <select name="position" required class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200">
+        <option value="">{t("careers.form.position.placeholder")}</option>
+        {positions.map((p) => (
+          <option value={p.id} selected={p.id === preselectedPositionId}>{p.titles[lang]}</option>
+        ))}
+        <option value="open" selected={preselectedPositionId === "open"}>—</option>
+      </select>
+    </label>
+  </div>
+
+  <label class="block">
+    <span class="text-sm font-medium text-slate-800">{t("careers.form.experience")}</span>
+    <textarea name="experience" rows="4" class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"></textarea>
+  </label>
+
+  <label class="block">
+    <span class="text-sm font-medium text-slate-800">{t("careers.form.message")}</span>
+    <textarea name="message" rows="4" class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"></textarea>
+  </label>
+
+  <label class="flex items-start gap-2 text-sm text-slate-700">
+    <input type="checkbox" name="consent" required class="mt-1" />
+    <span>{t("careers.form.consent")} <span class="text-red-500">*</span></span>
+  </label>
+
+  <button
+    type="submit"
+    class="inline-flex items-center justify-center rounded-md bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800"
+  >
+    {t("careers.form.submit")}
+  </button>
+
+  <div class="hidden rounded-md border border-emerald-200 bg-emerald-50 p-4 text-emerald-900" data-success>
+    <p class="font-semibold">{t("form.success.title")}</p>
+    <p class="text-sm">{t("form.success.body")}</p>
+  </div>
+</form>

@@ -1,0 +1,71 @@
+---
+import { languages, type Lang } from "../i18n/ui";
+
+interface Props {
+  current: Lang;
+  // Path within the locale (e.g. "/services" or "/"). The switcher will
+  // produce links like /en/services for each available language.
+  pathInLocale: string;
+}
+
+const { current, pathInLocale } = Astro.props;
+const cleanPath = pathInLocale.startsWith("/") ? pathInLocale.slice(1) : pathInLocale;
+const codes = Object.keys(languages) as Lang[];
+---
+
+<div class="relative inline-block text-sm" data-lang-switcher>
+  <button
+    type="button"
+    class="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-3 py-1.5 font-medium uppercase text-slate-700 hover:border-slate-300 hover:bg-slate-50"
+    aria-haspopup="listbox"
+    aria-expanded="false"
+    data-lang-toggle
+  >
+    {current}
+    <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+      <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.06l3.71-3.83a.75.75 0 1 1 1.08 1.04l-4.25 4.38a.75.75 0 0 1-1.08 0L5.21 8.27a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd" />
+    </svg>
+  </button>
+  <ul
+    class="absolute right-0 z-30 mt-1 hidden min-w-[14rem] overflow-hidden rounded-md border border-slate-200 bg-white shadow-lg"
+    role="listbox"
+    data-lang-menu
+  >
+    {codes.map((code) => (
+      <li>
+        <a
+          href={cleanPath ? `/${code}/${cleanPath}` : `/${code}/`}
+          class:list={[
+            "block px-4 py-2 hover:bg-slate-50",
+            code === current && "font-semibold text-brand-700",
+          ]}
+          role="option"
+          aria-selected={code === current}
+        >
+          <span class="mr-2 inline-block w-6 uppercase text-slate-500">{code}</span>
+          {languages[code]}
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-lang-switcher]").forEach((root) => {
+    const btn = root.querySelector<HTMLButtonElement>("[data-lang-toggle]");
+    const menu = root.querySelector<HTMLElement>("[data-lang-menu]");
+    if (!btn || !menu) return;
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const open = !menu.classList.contains("hidden");
+      menu.classList.toggle("hidden", open);
+      btn.setAttribute("aria-expanded", String(!open));
+    });
+    document.addEventListener("click", (e) => {
+      if (!root.contains(e.target as Node)) {
+        menu.classList.add("hidden");
+        btn.setAttribute("aria-expanded", "false");
+      }
+    });
+  });
+</script>

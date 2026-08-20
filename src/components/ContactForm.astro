@@ -1,0 +1,53 @@
+---
+import { useTranslations } from "../i18n/utils";
+import type { Lang } from "../i18n/ui";
+import { company } from "../config";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<form
+  action={company.formspree.contact}
+  method="POST"
+  class="space-y-4"
+  data-form
+>
+  <input type="hidden" name="_language" value={lang} />
+  <input type="hidden" name="_form" value="contact" />
+  <input type="text" name="_gotcha" class="hidden" tabindex="-1" autocomplete="off" />
+
+  <div class="grid gap-4 sm:grid-cols-2">
+    <label class="block">
+      <span class="text-sm font-medium text-slate-800">{t("contact.form.name")} <span class="text-red-500">*</span></span>
+      <input type="text" name="name" required class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200" />
+    </label>
+    <label class="block">
+      <span class="text-sm font-medium text-slate-800">{t("contact.form.email")} <span class="text-red-500">*</span></span>
+      <input type="email" name="email" required class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200" />
+    </label>
+  </div>
+  <label class="block">
+    <span class="text-sm font-medium text-slate-800">{t("contact.form.subject")}</span>
+    <input type="text" name="subject" class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200" />
+  </label>
+  <label class="block">
+    <span class="text-sm font-medium text-slate-800">{t("contact.form.message")} <span class="text-red-500">*</span></span>
+    <textarea name="message" rows="5" required class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"></textarea>
+  </label>
+
+  <button
+    type="submit"
+    class="inline-flex items-center justify-center rounded-md bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-60"
+  >
+    {t("contact.form.submit")}
+  </button>
+
+  <div class="hidden rounded-md border border-emerald-200 bg-emerald-50 p-4 text-emerald-900" data-success>
+    <p class="font-semibold">{t("form.success.title")}</p>
+    <p class="text-sm">{t("form.success.body")}</p>
+  </div>
+</form>

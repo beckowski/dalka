@@ -1,0 +1,72 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { useTranslations, localizedPath } from "../../i18n/utils";
+import { ui, type Lang } from "../../i18n/ui";
+import JobApplicationForm from "../../components/JobApplicationForm.astro";
+import FormScript from "../../components/FormScript.astro";
+import { positions } from "../../i18n/positions";
+
+export function getStaticPaths() {
+  return (Object.keys(ui) as Lang[]).map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Lang };
+const t = useTranslations(lang);
+---
+
+<BaseLayout lang={lang} title={t("careers.title")} description={t("careers.subtitle")} pathInLocale="/careers">
+  <section class="bg-white">
+    <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+      <h1 class="text-4xl font-bold tracking-tight text-slate-900">{t("careers.title")}</h1>
+      <p class="mt-3 max-w-2xl text-lg text-slate-600">{t("careers.subtitle")}</p>
+
+      <h2 class="mt-12 text-2xl font-semibold text-slate-900">{t("careers.openPositions")}</h2>
+
+      {positions.length === 0 ? (
+        <div class="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-6 text-slate-700">
+          {t("careers.empty")}
+        </div>
+      ) : (
+        <ul class="mt-6 divide-y divide-slate-200 rounded-xl border border-slate-200 bg-white shadow-sm">
+          {positions.map((p) => (
+            <li class="flex flex-col gap-3 p-6 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p class="text-lg font-semibold text-slate-900">{p.titles[lang]}</p>
+                <p class="mt-1 text-sm text-slate-600">{p.locations[lang]} · {p.types[lang]}</p>
+                <p class="mt-2 text-slate-600">{p.summaries[lang]}</p>
+              </div>
+              <a
+                href={`#apply?position=${p.id}`}
+                class="shrink-0 inline-flex items-center rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800"
+                data-position={p.id}
+              >
+                {t("careers.applyFor")}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div id="apply" class="mt-16 rounded-2xl border border-slate-200 bg-slate-50 p-6 sm:p-10">
+        <h2 class="text-2xl font-semibold text-slate-900">{t("careers.applyTitle")}</h2>
+        <p class="mt-2 max-w-2xl text-slate-600">{t("careers.applyIntro")}</p>
+        <div class="mt-6">
+          <JobApplicationForm lang={lang} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <FormScript />
+
+  <script>
+    // Preselect a position when the user clicks "Apply" on a card.
+    document.querySelectorAll<HTMLAnchorElement>("a[data-position]").forEach((link) => {
+      link.addEventListener("click", () => {
+        const id = link.dataset.position;
+        const select = document.querySelector<HTMLSelectElement>("select[name=position]");
+        if (select && id) select.value = id;
+      });
+    });
+  </script>
+</BaseLayout>

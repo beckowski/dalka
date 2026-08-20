@@ -1,0 +1,73 @@
+---
+import { useTranslations, localizedPath } from "../i18n/utils";
+import type { Lang } from "../i18n/ui";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
+import { company } from "../config";
+
+interface Props {
+  lang: Lang;
+  pathInLocale: string;
+}
+
+const { lang, pathInLocale } = Astro.props;
+const t = useTranslations(lang);
+
+const links = [
+  { href: localizedPath(lang, "/"), label: t("nav.home") },
+  { href: localizedPath(lang, "/services"), label: t("nav.services") },
+  { href: localizedPath(lang, "/careers"), label: t("nav.careers") },
+  { href: localizedPath(lang, "/contact"), label: t("nav.contact") },
+];
+---
+
+<header class="sticky top-0 z-20 border-b border-slate-200 bg-white/85 backdrop-blur">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+    <a href={localizedPath(lang, "/")} class="flex items-center gap-2 tracking-tight text-slate-900" aria-label={company.name}>
+      <img src="/logo/black-logo-transparent-256.png" alt="" class="h-9 w-9" />
+      <span class="flex flex-col leading-none">
+        <span class="text-lg font-bold">DALKA</span>
+        <span class="text-[0.65rem] font-semibold tracking-[0.2em] text-brand-600">SYSTEMS</span>
+      </span>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-700">
+      {links.map((l) => (
+        <a href={l.href} class="hover:text-slate-900">{l.label}</a>
+      ))}
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <LanguageSwitcher current={lang} pathInLocale={pathInLocale} />
+      <button
+        type="button"
+        class="inline-flex items-center justify-center rounded-md p-2 text-slate-700 md:hidden"
+        aria-label="Menu"
+        data-mobile-toggle
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <nav class="hidden border-t border-slate-200 md:hidden" data-mobile-menu>
+    <div class="space-y-1 px-4 py-3">
+      {links.map((l) => (
+        <a href={l.href} class="block rounded px-2 py-2 text-base text-slate-700 hover:bg-slate-50">
+          {l.label}
+        </a>
+      ))}
+    </div>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>("[data-mobile-toggle]");
+  const menu = document.querySelector<HTMLElement>("[data-mobile-menu]");
+  if (toggle && menu) {
+    toggle.addEventListener("click", () => {
+      menu.classList.toggle("hidden");
+    });
+  }
+</script>

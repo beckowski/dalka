@@ -1,0 +1,20 @@
+---
+import { defaultLang } from "../i18n/ui";
+const target = `/${defaultLang}/`;
+const canonical = new URL(target, Astro.site).toString();
+---
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={canonical} />
+    <title>Dalka Systems</title>
+    <script define:vars={{ target }}>
+      location.replace(target);
+    </script>
+  </head>
+  <body></body>
+</html>

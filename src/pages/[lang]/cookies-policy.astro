@@ -1,0 +1,17 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { ui, type Lang } from "../../i18n/ui";
+import { legalPages } from "../../i18n/legal";
+import LegalPage from "../../components/LegalPage.astro";
+
+export function getStaticPaths() {
+  return (Object.keys(ui) as Lang[]).map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Lang };
+const page = legalPages.cookies[lang];
+---
+
+<BaseLayout lang={lang} title={page.title} description={page.intro} pathInLocale="/cookies-policy">
+  <LegalPage page={page} />
+</BaseLayout>
